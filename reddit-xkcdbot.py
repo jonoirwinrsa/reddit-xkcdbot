@@ -10,10 +10,15 @@ from time import sleep
 import reddit
 import os.path
 import re
+from time import strftime
 from random import choice
 
 # By Tristan Harward, http://www.trisweb.com
 # License: The MIT/X11 license (see LICENSE.md)
+
+# Redirect stdout to a log so we can nohup this bitch.
+sys.stdout = open('xkcdbot.log', 'a')
+print "Running reddit-xkcdbot at {1}".format(strftime("%a, %d %b %Y %H:%M:%S +0000"))
 
 VERSION = '2012-05-09'
 APP_TITLE = 'reddit-xkcdbot'
