@@ -13,13 +13,14 @@ import os.path
 import re
 from time import strftime
 from random import choice
+import logging
 
+logging.basicConfig(filename='xkcdbot.log', level=logging.DEBUG, format='%(asctime)s: %(message)s')
 # By Tristan Harward, http://www.trisweb.com
 # License: The MIT/X11 license (see LICENSE.md)
 
 # Redirect stdout to a log so we can nohup this bitch.
-sys.stdout = open('xkcdbot.log', 'a')
-print "---\nRunning reddit-xkcdbot at {0}".format(strftime("%a, %d %b %Y %H:%M:%S +0000"))
+logging.info "---\nRunning reddit-xkcdbot at {0}".format(strftime("%a, %d %b %Y %H:%M:%S +0000"))
 
 VERSION = '2012-05-09'
 APP_TITLE = 'reddit-xkcdbot'
@@ -54,14 +55,14 @@ POLL_FREQUENCY = 300
 
 try:
   while True:
-    print "Checking /r/xkcd for new submissions..."
+    logging.info "Checking /r/xkcd for new submissions..."
     r = reddit.Reddit(user_agent=USER_AGENT)
     r.login(USERNAME, PASSWORD)
     submissions = r.get_subreddit('xkcd').get_new_by_date(limit=10)
     for s in submissions:
       if s.domain == "xkcd.com" and re.match("http:\/\/(www\.)?xkcd.(com|org)\/([0-9]+)\/?", s.url):
         if s.ups > 10 and s.url not in submitted:
-          print "New xkcd submission found! {0} - {1}".format(s.title, s.url)
+          logging.info "New xkcd submission found! {0} - {1}".format(s.title, s.url)
           existing_comment_found = False
           for c in s.comments:
             if re.search("mobile version", c.body, re.IGNORECASE) or c.author == USERNAME:
@@ -71,7 +72,7 @@ try:
             mobile_url = "http://m.xkcd.com/{0}/".format(xkcd_number)
             random_string = choice(FUN_STRINGS)
             new_comment = "[Mobile Version!]({0})\n\n(Love, the new xkcd_bot. {1})".format(mobile_url, random_string)
-            print "  -> Adding Comment!: {0}".format(new_comment)
+            logging.info "  -> Adding Comment!: {0}".format(new_comment)
             retries = 0
             while True:
               try:
@@ -79,7 +80,7 @@ try:
                 s.add_comment(new_comment)
               except reddit.errors.RateLimitExceeded as err:
                 if retries < 15:
-                  print "  {0} - Trying again in 60 seconds...".format(err.message)
+                  logging.info "  {0} - Trying again in 60 seconds...".format(err.message)
                   sleep(60)
                   continue
               break
@@ -90,5 +91,5 @@ try:
           submitted_file.close()
     sleep(POLL_FREQUENCY)
 except (KeyboardInterrupt):
-  print('Closing %s.' % APP_TITLE)
+  logging.info('Closing %s.' % APP_TITLE)
   quit()
