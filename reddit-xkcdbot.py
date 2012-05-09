@@ -19,7 +19,7 @@ from random import choice
 
 # Redirect stdout to a log so we can nohup this bitch.
 sys.stdout = open('xkcdbot.log', 'a')
-print "---\nRunning reddit-xkcdbot at {1}".format(strftime("%a, %d %b %Y %H:%M:%S +0000"))
+print "---\nRunning reddit-xkcdbot at {0}".format(strftime("%a, %d %b %Y %H:%M:%S +0000"))
 
 VERSION = '2012-05-09'
 APP_TITLE = 'reddit-xkcdbot'
