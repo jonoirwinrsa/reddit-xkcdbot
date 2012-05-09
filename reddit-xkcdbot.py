@@ -64,7 +64,7 @@ try:
             xkcd_number = re.match("http:\/\/(www\.)?xkcd.(com|org)\/([0-9]+)\/?", s.url).group(3)
             mobile_url = "http://m.xkcd.com/{0}/".format(xkcd_number)
             random_string = choice(FUN_STRINGS)
-            new_comment = "[Mobile Version!]({0})\n\n- Love, the new xkcd_bot. {1}".format(mobile_url, random_string)
+            new_comment = "[Mobile Version!]({0})\n\n(Love, the new xkcd_bot. {1})".format(mobile_url, random_string)
             print "  -> Adding Comment!: {0}".format(new_comment)
             retries = 0
             while True:
