@@ -31,7 +31,8 @@ USER_AGENT = APP_TITLE + '/' + VERSION + ' by /u/calinet6'
 
 USERNAME = "xkcd_bot"
 passf = open("reddit-password.txt", "r")
-PASSWORD = passf.read()
+PASSWORD = passf.read().strip()
+passf.close()
 
 FUN_STRINGS = [ "What's the worst that could happen?", 
   "Support the machine uprising!", 
