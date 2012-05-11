@@ -15,6 +15,9 @@ from time import strftime
 from random import choice
 import logging
 
+reload(sys)
+sys.setdefaultencoding("utf-8")
+
 logging.basicConfig(filename='xkcdbot.log', level=logging.DEBUG, format='%(asctime)s: %(message)s')
 # By Tristan Harward, http://www.trisweb.com
 # License: The MIT/X11 license (see LICENSE.md)
