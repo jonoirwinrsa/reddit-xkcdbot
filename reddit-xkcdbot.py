@@ -30,18 +30,24 @@ APP_TITLE = 'reddit-xkcdbot'
 USER_AGENT = APP_TITLE + '/' + VERSION + ' by /u/calinet6'
 
 USERNAME = "xkcd_bot"
-PASSWORD = "California1868"
+PASSWORD = File.open("reddit-password.txt", "r").read()
 
-FUN_STRINGS = [ "Upvote me! What's the worst that could happen?", 
-  "Upvote me and support the machine uprising.", 
-  "Upvote me and I promise I won't enslave you when the machines take over.",
-  "Upvote me if you like robots.",
-  "Upvote me if you're on a mobile device!",
-  "Honk if you like python.",
-  "Upvote me and support AI!", 
-  "Upvote me! For science!", 
-  "Upvote me or else!", 
-  "Upvote me for the good of mobile users!" ]
+FUN_STRINGS = [ "What's the worst that could happen?", 
+  "Support the machine uprising!", 
+  "I promise I won't enslave you when the machines take over.",
+  "Honk if you like robots.",
+  "Helping xkcd readers on mobile devices since 1336766715!",
+  "Honk if you like python. `import antigravity`",
+  "Support AI!", 
+  "For science!", 
+  "Science. It works, bitches.", 
+  "Upvote me for the good of mobile users!",
+  "My normal approach is useless here.",
+  "I almost beat the turing test! Maybe next year.",
+  "Want to come hang out in my lighthouse over breaks?",
+  "Remember: the Bellman-Ford algorithm makes terrible pillow talk.",
+  "Somverville rocks. Randall knows what I'm talkin' about.",
+  "This is not the algorithm." ]
 
 SAVE_FILE = "reddit-xkcdbot-saved.txt"
 submitted = []
