@@ -14,6 +14,7 @@ import re
 from time import strftime
 from random import choice
 import logging
+import urllib2
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -66,40 +67,45 @@ POLL_FREQUENCY = 300
 
 try:
   while True:
-    logging.info("Checking /r/xkcd for new submissions...")
-    r = reddit.Reddit(user_agent=USER_AGENT)
-    r.login(USERNAME, PASSWORD)
-    submissions = r.get_subreddit('xkcd').get_new_by_date(limit=10)
-    for s in submissions:
-      if s.domain == "xkcd.com" and re.match("http:\/\/(www\.)?xkcd.(com|org)\/([0-9]+)\/?", s.url):
-        if s.ups > 0 and s.url not in submitted:
-          logging.info("New xkcd submission found! {0} - {1}".format(s.title, s.url))
-          existing_comment_found = False
-          for c in s.comments:
-            if re.search("mobile version", c.body, re.IGNORECASE) or c.author == USERNAME:
-              existing_comment_found = True
-          if not existing_comment_found:
-            xkcd_number = re.match("http:\/\/(www\.)?xkcd.(com|org)\/([0-9]+)\/?", s.url).group(3)
-            mobile_url = "http://m.xkcd.com/{0}/".format(xkcd_number)
-            random_string = choice(FUN_STRINGS)
-            new_comment = "[Mobile Version!]({0})\n\n(Love, the new xkcd_bot. {1})".format(mobile_url, random_string)
-            logging.info("  -> Adding Comment!: {0}".format(new_comment))
-            retries = 0
-            while True:
-              try:
-                retries += 1
-                s.add_comment(new_comment)
-              except reddit.errors.RateLimitExceeded as err:
-                if retries < 15:
-                  logging.info("  {0} - Trying again in 60 seconds...".format(err.message))
-                  sleep(60)
-                  continue
-              break
-          # Save it!
-          submitted.append(s.url)
-          submitted_file = open(SAVE_FILE, 'a')
-          submitted_file.write("%s\n" % s.url)
-          submitted_file.close()
+    try:
+      logging.info("Checking /r/xkcd for new submissions...")
+      r = reddit.Reddit(user_agent=USER_AGENT)
+      r.login(USERNAME, PASSWORD)
+      submissions = r.get_subreddit('xkcd').get_new_by_date(limit=10)
+      for s in submissions:
+        if s.domain == "xkcd.com" and re.match("http:\/\/(www\.)?xkcd.(com|org)\/([0-9]+)\/?", s.url):
+          if s.ups > 0 and s.url not in submitted:
+            logging.info("New xkcd submission found! {0} - {1}".format(s.title, s.url))
+            existing_comment_found = False
+            for c in s.comments:
+              if re.search("mobile version", c.body, re.IGNORECASE) or c.author == USERNAME:
+                existing_comment_found = True
+            if not existing_comment_found:
+              xkcd_number = re.match("http:\/\/(www\.)?xkcd.(com|org)\/([0-9]+)\/?", s.url).group(3)
+              mobile_url = "http://m.xkcd.com/{0}/".format(xkcd_number)
+              random_string = choice(FUN_STRINGS)
+              new_comment = "[Mobile Version!]({0})\n\n(Love, the new xkcd_bot. {1})".format(mobile_url, random_string)
+              logging.info("  -> Adding Comment!: {0}".format(new_comment))
+              retries = 0
+              while True:
+                try:
+                  retries += 1
+                  s.add_comment(new_comment)
+                except reddit.errors.RateLimitExceeded as err:
+                  if retries < 15:
+                    logging.info("  {0} - Trying again in 60 seconds...".format(err.message))
+                    sleep(60)
+                    continue
+                break
+            # Save it!
+            submitted.append(s.url)
+            submitted_file = open(SAVE_FILE, 'a')
+            submitted_file.write("%s\n" % s.url)
+            submitted_file.close()
+    except urllib2.HTTPError as e:
+      logging.info("ERROR: HTTPError code {0} encountered while making request - sleeping another iteration and retrying.".format(e.code))
+    except urllib2.URLError as e:
+      logging.info("URLError: {0} - sleeping another iteration and retrying.".format(e.reason))
     sleep(POLL_FREQUENCY)
 except (KeyboardInterrupt):
   logging.info('Closing %s.' % APP_TITLE)
