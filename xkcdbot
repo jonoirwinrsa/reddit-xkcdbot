@@ -4,6 +4,7 @@
 export XKCDPID=`ps aux | grep xkcdbot | grep -v grep | awk '{print($2)}'`
 
 if [ "$XKCDPID" ]
+  echo "Killing old process $XKCDPID"
   then kill $XKCDPID
 fi
 
@@ -11,5 +12,5 @@ fi
 git pull
 
 # Start
-nohup python reddit-xkcdbot.py &
+nohup ./reddit-xkcdbot.py &
 disown
