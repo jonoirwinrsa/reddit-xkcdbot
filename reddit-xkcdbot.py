@@ -132,7 +132,7 @@ try:
               random_string = get_fun_string()
               title_text = get_title_text(xkcd_number)
               title_or_alt = choice(["Title", "Alt", "Hover"])
-              new_comment = "**[Mobile Version!]({0})**\n\n**{1} text:** *{2}*\n\n    (Love, the new xkcd_bot. {3})".format(mobile_url, title_or_alt, title_text, random_string)
+              new_comment = "**[Mobile Version!]({0})**\n\n**{1} text:** {2}\n\n    (Love, the new xkcd_bot. {3})".format(mobile_url, title_or_alt, title_text, random_string)
               logging.info("  -> Adding Comment!: {0}".format(new_comment))
               retries = 0
               while True:
