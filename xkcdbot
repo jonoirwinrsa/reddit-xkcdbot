@@ -12,3 +12,4 @@ git pull
 
 # Start
 nohup python reddit-xkcdbot.py &
+disown
