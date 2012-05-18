@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # Kill if started
-export XKCDPID=`ps aux | grep xkcdbot | grep -v grep | awk '{print($2)}'`
+export XKCDPID=`ps aux | grep reddit-xkcdbot.py | grep -v grep | awk '{print($2)}'`
 
 if [ "$XKCDPID" ]
-  echo "Killing old process $XKCDPID"
+  echo "Killing old process "$XKCDPID
   then kill $XKCDPID
 fi
 
