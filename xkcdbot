@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Kill if started
-export XKCDPID = ps aux | grep xkcdbot | grep -v grep | awk '{print($2)}' | kill
+export XKCDPID=`ps aux | grep xkcdbot | grep -v grep | awk '{print($2)}'`
 
 if [ XKCDPID ]
   kill $XKCDPID
