@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Kill if started
-export XKCDPID=`ps aux | grep reddit-xkcdbot.py | grep -v grep | awk '{print($2)}'`
+export XKCDPID=`ps aux | grep 'reddit-xkcdbot.py' | grep -v grep | awk '{print($2)}'`
 
-if [ "$XKCDPID" ]
+if [ -n $XKCDPID ]
   echo "Killing old process "$XKCDPID
   then kill $XKCDPID
 fi
@@ -12,5 +12,5 @@ fi
 git pull
 
 # Start
-nohup ./reddit-xkcdbot.py &
+nohup python reddit-xkcdbot.py &
 disown
