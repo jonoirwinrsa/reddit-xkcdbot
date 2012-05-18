@@ -3,11 +3,12 @@
 # Kill if started
 export XKCDPID=`ps aux | grep xkcdbot | grep -v grep | awk '{print($2)}'`
 
-if [ -n "$XKCDPID" ] ; then
-  kill $XKCDPID
+if [ "$XKCDPID" ]
+  then kill $XKCDPID
 fi
 
 # Update from git
 git pull
+
 # Start
 nohup python reddit-xkcdbot.py &
