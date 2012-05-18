@@ -83,7 +83,8 @@ def get_title_text(xkcd_number):
       if item_number == str(xkcd_number):
         # Found! Get the description and parse the "title" attribute.
         doc = html.fragment_fromstring(item["description"])
-        return str(doc.attrib["title"])
+        title_text = re.sub(r'([*~^\[\](])', r'\\\1', str(doc.attrib["title"]))
+        return title_text
   except Exception as e:
     print "Error encountered: {0}".format(e)
   return "(Not found)"
@@ -130,7 +131,8 @@ try:
               mobile_url = "http://m.xkcd.com/{0}/".format(xkcd_number)
               random_string = get_fun_string()
               title_text = get_title_text(xkcd_number)
-              new_comment = "**[Mobile Version!]({0})**\n\n**Title text:** *{1}*\n\n    (Love, the new xkcd_bot. {2})".format(mobile_url, title_text, random_string)
+              title_or_alt = choice(["Title", "Alt", "Hover"])
+              new_comment = "**[Mobile Version!]({0})**\n\n**{1} text:** *{2}*\n\n    (Love, the new xkcd_bot. {3})".format(mobile_url, title_or_alt, title_text, random_string)
               logging.info("  -> Adding Comment!: {0}".format(new_comment))
               retries = 0
               while True:
