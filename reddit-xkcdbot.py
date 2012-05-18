@@ -131,7 +131,7 @@ try:
               mobile_url = "http://m.xkcd.com/{0}/".format(xkcd_number)
               random_string = get_fun_string()
               title_text = get_title_text(xkcd_number)
-              random_thing_to_call_the_extra_text_to_fuck_with_people = choice(["Title Text", "Alt Text", "Hover Text", "Subtext", "Extra Junk"])
+              random_thing_to_call_the_extra_text_to_fuck_with_people = choice(["Title text", "Alt text", "Hover text", "Subtext", "Extra junk", "Mouseover text"])
               new_comment = "**[Mobile Version!]({0})**\n\n**{1}:** {2}\n\n    (Love, the new xkcd_bot. {3})".format(mobile_url, random_thing_to_call_the_extra_text_to_fuck_with_people, title_text, random_string)
               logging.info("  -> Adding Comment!: {0}".format(new_comment))
               retries = 0
