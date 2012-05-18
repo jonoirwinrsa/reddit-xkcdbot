@@ -3,7 +3,7 @@
 # Kill if started
 export XKCDPID=`ps aux | grep xkcdbot | grep -v grep | awk '{print($2)}'`
 
-if [ XKCDPID ]
+if [ -n "$XKCDPID" ] ; then
   kill $XKCDPID
 fi
 
