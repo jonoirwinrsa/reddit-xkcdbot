@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Kill if started
+export XKCDPID = ps aux | grep xkcdbot | grep -v grep | awk '{print($2)}' | kill
+
+if [ XKCDPID ]
+  kill $XKCDPID
+fi
+
+# Update from git
+git pull
+# Start
+nohup python reddit-xkcdbot.py &

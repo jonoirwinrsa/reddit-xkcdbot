@@ -28,4 +28,5 @@ pip-log.txt
 
 # reddit-xkcdbot specific
 reddit-password.txt
-xkcdbot.log
+xkcdbot.log*
+nohup*
