@@ -49,6 +49,7 @@ APP_TITLE = 'reddit-xkcdbot'
 USER_AGENT = APP_TITLE + '/' + VERSION + ' by /u/calinet6'
 
 XKCD_RSS_URL = "http://xkcd.com/rss.xml"
+ENABLE_TITLE_TEXT = False
 
 # Reddit Username
 USERNAME = "xkcd_bot"
@@ -67,7 +68,8 @@ SAVED_FILENAME = "reddit-xkcdbot-saved.txt"
 def get_fun_string():
   try:
     fortune_file = open(FORTUNE_FILENAME, "r")
-    fortune = choice(fortune_file.read().split("\n")).strip()
+    fortunes = fortune_file.read().strip().split("\n")
+    fortune = choice(fortunes).strip()
     fortune_file.close()
     return fortune
   except:
@@ -83,7 +85,7 @@ def get_title_text(xkcd_number):
       if item_number == str(xkcd_number):
         # Found! Get the description and parse the "title" attribute.
         doc = html.fragment_fromstring(item["description"])
-        title_text = re.sub(r'([*~^\[\](])', r'\\\1', str(doc.attrib["title"]))
+        title_text = str(doc.attrib["title"])
         return title_text
   except Exception as e:
     print "Error encountered: {0}".format(e)
@@ -130,9 +132,14 @@ try:
               xkcd_number = re.match("http:\/\/(www\.)?xkcd.(com|org)\/([0-9]+)\/?", s.url).group(3)
               mobile_url = "http://m.xkcd.com/{0}/".format(xkcd_number)
               random_string = get_fun_string()
-              title_text = get_title_text(xkcd_number)
-              random_thing_to_call_the_extra_text_to_fuck_with_people = choice(["Title text", "Alt text", "Hover text", "Subtext", "Extra junk", "Mouseover text"])
-              new_comment = "**[Mobile Version!]({0})**\n\n**{1}:** {2}\n\n    (Love, the new xkcd_bot. {3})".format(mobile_url, random_thing_to_call_the_extra_text_to_fuck_with_people, title_text, random_string)
+              
+              if ENABLE_TITLE_TEXT:
+                title_text = get_title_text(xkcd_number)
+                random_thing_to_call_the_extra_text_to_fuck_with_people = choice(["Title text", "Alt text", "Hover text", "Subtext", "Extra junk", "Mouseover text"])
+                new_comment = "**[Mobile Version!]({0})**\n\n**{1}:** {2}\n\n    (Love, the new xkcd_bot. {3})".format(mobile_url, random_thing_to_call_the_extra_text_to_fuck_with_people, title_text, random_string)
+              else:
+                new_comment = "**[Mobile Version!]({0})**".format(mobile_url)
+
               logging.info("  -> Adding Comment!: {0}".format(new_comment))
               retries = 0
               while True:
