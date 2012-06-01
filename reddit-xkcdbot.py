@@ -121,7 +121,7 @@ try:
       submissions = r.get_subreddit('xkcd').get_new_by_date(limit=10)
       for s in submissions:
         matching = re.match(URL_REGEX, s.url)
-        if s.domain == "xkcd.com" and :
+        if s.domain == "xkcd.com" and matching:
           if s.url not in submitted:
             logging.info("New xkcd submission found! {0} - {1}".format(s.title, s.url))
             existing_comment_found = False
