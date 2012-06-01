@@ -50,7 +50,7 @@ USER_AGENT = APP_TITLE + '/' + VERSION + ' by /u/calinet6'
 
 XKCD_RSS_URL = "http://xkcd.com/rss.xml"
 URL_REGEX = "(http:\/\/)?(www\.)?xkcd\.(com|org)\/([0-9]+)\/?"
-ENABLE_TITLE_TEXT = False
+ENABLE_TITLE_TEXT = True
 
 # Reddit Username
 USERNAME = "xkcd_bot"
