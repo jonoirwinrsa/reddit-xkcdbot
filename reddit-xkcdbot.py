@@ -82,7 +82,7 @@ def get_title_text(xkcd_number):
   try:
     feed = feedparser.parse(XKCD_RSS_URL)
     for item in feed["items"]:
-      item_number = re.match(URL_REGEX, item["link"]).group(4)
+      item_number = re.match(URL_REGEX, item["link"], re.IGNORECASE).group(4)
       if item_number == str(xkcd_number):
         # Found! Get the description and parse the "title" attribute.
         doc = html.fragment_fromstring(item["description"])
@@ -120,8 +120,8 @@ try:
       r.login(USERNAME, PASSWORD)
       submissions = r.get_subreddit('xkcd').get_new_by_date(limit=10)
       for s in submissions:
-        matching = re.match(URL_REGEX, s.url)
-        logging.info("  (Checking {0} - {1}".format(s.title, s.url))
+        matching = re.match(URL_REGEX, s.url, re.IGNORECASE)
+        #logging.info("  (Checking {0} - {1}".format(s.title, s.url))
         if s.domain == "xkcd.com" and matching:
           if s.url not in submitted:
             logging.info("New xkcd submission found! {0} - {1}".format(s.title, s.url))
@@ -132,7 +132,7 @@ try:
                   existing_comment_found = True
 
             if not existing_comment_found:
-              xkcd_number = re.match(URL_REGEX, s.url).group(4)
+              xkcd_number = re.match(URL_REGEX, s.url, re.IGNORECASE).group(4)
               mobile_url = "http://m.xkcd.com/{0}/".format(xkcd_number)
               random_string = get_fun_string()
               
