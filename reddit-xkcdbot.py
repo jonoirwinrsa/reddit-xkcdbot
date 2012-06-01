@@ -49,6 +49,7 @@ APP_TITLE = 'reddit-xkcdbot'
 USER_AGENT = APP_TITLE + '/' + VERSION + ' by /u/calinet6'
 
 XKCD_RSS_URL = "http://xkcd.com/rss.xml"
+URL_REGEX = "(http:\/\/)?(www\.)?xkcd.(com|org)\/([0-9]+)\/?"
 ENABLE_TITLE_TEXT = False
 
 # Reddit Username
@@ -81,7 +82,7 @@ def get_title_text(xkcd_number):
   try:
     feed = feedparser.parse(XKCD_RSS_URL)
     for item in feed["items"]:
-      item_number = re.match("http:\/\/(www\.)?xkcd.(com|org)\/([0-9]+)\/?", item["link"]).group(3)
+      item_number = re.match(URL_REGEX, item["link"]).group(4)
       if item_number == str(xkcd_number):
         # Found! Get the description and parse the "title" attribute.
         doc = html.fragment_fromstring(item["description"])
@@ -119,7 +120,8 @@ try:
       r.login(USERNAME, PASSWORD)
       submissions = r.get_subreddit('xkcd').get_new_by_date(limit=10)
       for s in submissions:
-        if s.domain == "xkcd.com" and re.match("http:\/\/(www\.)?xkcd.(com|org)\/([0-9]+)\/?", s.url):
+        matching = re.match(URL_REGEX, s.url)
+        if s.domain == "xkcd.com" and :
           if s.url not in submitted:
             logging.info("New xkcd submission found! {0} - {1}".format(s.title, s.url))
             existing_comment_found = False
@@ -129,7 +131,7 @@ try:
                   existing_comment_found = True
 
             if not existing_comment_found:
-              xkcd_number = re.match("http:\/\/(www\.)?xkcd.(com|org)\/([0-9]+)\/?", s.url).group(3)
+              xkcd_number = re.match(URL_REGEX, s.url).group(4)
               mobile_url = "http://m.xkcd.com/{0}/".format(xkcd_number)
               random_string = get_fun_string()
               
