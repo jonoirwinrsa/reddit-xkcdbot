@@ -49,7 +49,7 @@ APP_TITLE = 'reddit-xkcdbot'
 USER_AGENT = APP_TITLE + '/' + VERSION + ' by /u/calinet6'
 
 XKCD_RSS_URL = "http://xkcd.com/rss.xml"
-URL_REGEX = "(http:\/\/)?(www\.)?xkcd.(com|org)\/([0-9]+)\/?"
+URL_REGEX = "(http:\/\/)?(www\.)?xkcd\.(com|org)\/([0-9]+)\/?"
 ENABLE_TITLE_TEXT = False
 
 # Reddit Username
@@ -121,6 +121,7 @@ try:
       submissions = r.get_subreddit('xkcd').get_new_by_date(limit=10)
       for s in submissions:
         matching = re.match(URL_REGEX, s.url)
+        logging.info("  (Checking {0} - {1}".format(s.title, s.url))
         if s.domain == "xkcd.com" and matching:
           if s.url not in submitted:
             logging.info("New xkcd submission found! {0} - {1}".format(s.title, s.url))
