@@ -139,7 +139,7 @@ try:
               if ENABLE_TITLE_TEXT:
                 title_text = get_title_text(xkcd_number)
                 random_thing_to_call_the_extra_text_to_fuck_with_people = choice(["Title text", "Alt text", "Hover text", "Subtext", "Extra junk", "Mouseover text"])
-                new_comment = "**[Mobile Version!]({0})**\n\n**{1}:** {2}\n\n    (Love, the new xkcd_bot. {3})".format(mobile_url, random_thing_to_call_the_extra_text_to_fuck_with_people, title_text, random_string)
+                new_comment = "**[Mobile Version!]({0})**\n\n**{1}:** {2}\n\n    (Love, xkcd_bot. {3})".format(mobile_url, random_thing_to_call_the_extra_text_to_fuck_with_people, title_text, random_string)
               else:
                 new_comment = "**[Mobile Version!]({0})**".format(mobile_url)
 
