@@ -20,6 +20,7 @@ import os.path
 import re
 from time import strftime
 from random import choice
+from random import randint
 import logging
 import urllib2
 import feedparser
@@ -138,12 +139,16 @@ try:
                             mobile_url = "http://m.xkcd.com/{0}/".format(xkcd_number)
                             random_string = get_fun_string()
 
+                            version_text = "Mobile"
+                            if randint(0, 100) > 90:
+                                version_text = "Batmobile"
+
                             if ENABLE_TITLE_TEXT:
                                 title_text = get_title_text(xkcd_number)
-                                random_thing_to_call_the_extra_text_to_fuck_with_people = choice(["Title text", "Alt text", "Hover text", "Subtext", "Extra junk", "Mouseover text"])
-                                new_comment = "**[Mobile Version!]({0})**\n\n**{1}:** {2}\n\n    (Love, xkcd_bot. {3})".format(mobile_url, random_thing_to_call_the_extra_text_to_fuck_with_people, title_text, random_string)
+                                random_thing_to_call_the_extra_text_to_fuck_with_people = choice(["Title text", "Title text", "Title text", "Alt text", "Hover text", "Subtext", "Extra junk", "Mouseover text", "Bat text"])
+                                new_comment = "**[{0} Version!]({1})**\n\n**{2}:** {3}\n\n    (Love, xkcd_bot. {4})".format(version_text, mobile_url, random_thing_to_call_the_extra_text_to_fuck_with_people, title_text, random_string)
                             else:
-                                new_comment = "**[Mobile Version!]({0})**".format(mobile_url)
+                                new_comment = "**[{0} Version!]({1})**".format(version_text, mobile_url)
 
                             logging.info("  -> Adding Comment!: {0}".format(new_comment))
                             retries = 0
