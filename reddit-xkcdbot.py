@@ -30,6 +30,9 @@ from lxml.cssselect import CSSSelector
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
+requests_log = logging.getLogger("requests")
+requests_log.setLevel(logging.WARNING)
+
 # Only argument supported so far is --debug, for running without making real submissions or changes.
 if len(sys.argv) > 1 and sys.argv[1] == "--debug":
     debug = True
@@ -39,7 +42,7 @@ else:
 if debug:
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG, format='%(asctime)s: %(message)s')
 else:
-    logging.basicConfig(filename='xkcdbot.log', level=logging.DEBUG, format='%(asctime)s: %(message)s')
+    logging.basicConfig(filename='xkcdbot.log', level=logging.INFO, format='%(asctime)s: %(message)s')
 
 logging.info("---\n--- Starting reddit-xkcdbot ---")
 
