@@ -177,7 +177,7 @@ try:
         except urllib2.URLError as e:
             logging.info("URLError: {0} - sleeping another iteration and retrying.".format(e.reason))
         except Exception as e:
-            logging.info("Unknown error: {0} - sleeping another iteration and retrying.".format(e.reason))
+            logging.info("Unknown error, sleeping another iteration and retrying.")
         sleep(POLL_FREQUENCY)
 except (KeyboardInterrupt):
     logging.info('Closing %s.' % APP_TITLE)
