@@ -79,14 +79,13 @@ def get_fun_string():
     return ""
 
 
-def get_title_text(xkcd_number):
+def get_json_data(xkcd_number):
     '''Get the title text (hover tooltip text) of the given xkcd comic'''
     try:
         json_url = "http://xkcd.com/{0}/info.0.json".format(xkcd_number)
         req = urllib2.Request(json_url, None, {'user-agent': JSON_USER_AGENT})
         json_data = json.load(urllib2.urlopen(req))
-        if json_data:
-            return json_data["alt"]
+        return json_data
     except Exception as e:
         print "Error encountered: {0}".format(e)
     return "(Not found)"
@@ -136,13 +135,16 @@ try:
                             random_string = get_fun_string()
 
                             version_text = "Mobile"
-                            if randint(0, 100) > 90:
+                            if randint(0, 100) > 95:
                                 version_text = "Batmobile"
 
                             if ENABLE_TITLE_TEXT:
-                                title_text = get_title_text(xkcd_number)
+                                data = get_json_data(xkcd_number)
+                                title_text = data["alt"]
+                                img = data["img"]
+                                title = data["title"]
                                 random_thing_to_call_the_extra_text_to_fuck_with_people = choice(["Title text", "Title text", "Title text", "Alt text", "Hover text", "Subtext", "Extra junk", "Mouseover text", "Bat text"])
-                                new_comment = "**[{0} Version!]({1})**\n\n**{2}:** {3}\n\n    ({4} Love, xkcd_bot.)".format(version_text, mobile_url, random_thing_to_call_the_extra_text_to_fuck_with_people, title_text, random_string)
+                                new_comment = "**[{0} Version!]({1})**\n\n[Direct image link: {4}]({5})\n\n**{2}:** {3}\n\n    ({6} Love, xkcd_bot.)".format(version_text, mobile_url, random_thing_to_call_the_extra_text_to_fuck_with_people, title_text, title, img, random_string)
                             else:
                                 new_comment = "**[{0} Version!]({1})**".format(version_text, mobile_url)
 
