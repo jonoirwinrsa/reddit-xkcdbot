@@ -5,27 +5,23 @@
 
 Posts useful comments on xkcd submissions in /r/xkcd
 
-Requirements: feedparser, lxml
-(install with pip: "pip install feedparser lxml")
+Requirements: praw
+(install with pip: "pip install praw")
 '''
 
 # By Tristan Harward, http://www.trisweb.com
 # License: The MIT/X11 license (see LICENSE.md)
 
 import sys
-from sys import stdout, stdin
 from time import sleep
-import reddit
+import praw
 import os.path
 import re
-from time import strftime
 from random import choice
 from random import randint
 import logging
 import urllib2
-import feedparser
-from lxml import html
-from lxml.cssselect import CSSSelector
+import json
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -48,11 +44,11 @@ logging.info("---\n--- Starting reddit-xkcdbot ---")
 
 ### Configuration! You can change these if you want.
 
-VERSION = '2012-05-09'
+VERSION = '1.0'
 APP_TITLE = 'reddit-xkcdbot'
 USER_AGENT = APP_TITLE + '/' + VERSION + ' by /u/calinet6'
+JSON_USER_AGENT = "python;{0}/{1}".format(APP_TITLE, VERSION)
 
-XKCD_RSS_URL = "http://xkcd.com/rss.xml"
 URL_REGEX = "(https?:\/\/)?(www\.)?xkcd\.(com|org)\/([0-9]+).*"
 ENABLE_TITLE_TEXT = True
 
@@ -86,14 +82,11 @@ def get_fun_string():
 def get_title_text(xkcd_number):
     '''Get the title text (hover tooltip text) of the given xkcd comic'''
     try:
-        feed = feedparser.parse(XKCD_RSS_URL)
-        for item in feed["items"]:
-            item_number = re.match(URL_REGEX, item["link"], re.IGNORECASE).group(4)
-            if item_number == str(xkcd_number):
-                # Found! Get the description and parse the "title" attribute.
-                doc = html.fragment_fromstring(item["description"])
-                title_text = str(doc.attrib["title"])
-                return title_text
+        json_url = "http://xkcd.com/{0}/info.0.json".format(xkcd_number)
+        req = urllib2.Request(json_url, None, {'user-agent': JSON_USER_AGENT})
+        json_data = json.load(urllib2.urlopen(req))
+        if json_data:
+            return json_data["alt"]
     except Exception as e:
         print "Error encountered: {0}".format(e)
     return "(Not found)"
@@ -122,7 +115,7 @@ try:
     while True:
         try:
             logging.info("Checking /r/xkcd for new submissions...")
-            r = reddit.Reddit(user_agent=USER_AGENT)
+            r = praw.Reddit(user_agent=USER_AGENT)
             r.login(USERNAME, PASSWORD)
             submissions = r.get_subreddit('xkcd').get_new_by_date(limit=10)
             for s in submissions:
@@ -149,7 +142,7 @@ try:
                             if ENABLE_TITLE_TEXT:
                                 title_text = get_title_text(xkcd_number)
                                 random_thing_to_call_the_extra_text_to_fuck_with_people = choice(["Title text", "Title text", "Title text", "Alt text", "Hover text", "Subtext", "Extra junk", "Mouseover text", "Bat text"])
-                                new_comment = "**[{0} Version!]({1})**\n\n**{2}:** {3}\n\n    (Love, xkcd_bot. {4})".format(version_text, mobile_url, random_thing_to_call_the_extra_text_to_fuck_with_people, title_text, random_string)
+                                new_comment = "**[{0} Version!]({1})**\n\n**{2}:** {3}\n\n    ({4} Love, xkcd_bot.)".format(version_text, mobile_url, random_thing_to_call_the_extra_text_to_fuck_with_people, title_text, random_string)
                             else:
                                 new_comment = "**[{0} Version!]({1})**".format(version_text, mobile_url)
 
@@ -160,7 +153,7 @@ try:
                                     retries += 1
                                     if not debug:
                                         s.add_comment(new_comment)
-                                except reddit.errors.RateLimitExceeded as err:
+                                except praw.errors.RateLimitExceeded as err:
                                     if retries < 15:
                                         logging.info("  {0} - Trying again in 60 seconds...".format(err.message))
                                         sleep(60)
@@ -177,7 +170,7 @@ try:
         except urllib2.URLError as e:
             logging.info("URLError: {0} - sleeping another iteration and retrying.".format(e.reason))
         except Exception as e:
-            logging.info("Unknown error, sleeping another iteration and retrying.")
+            logging.info("Unknown error: " + str(e) + " sleeping another iteration and retrying.")
         sleep(POLL_FREQUENCY)
 except (KeyboardInterrupt):
     logging.info('Closing %s.' % APP_TITLE)
