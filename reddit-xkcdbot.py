@@ -121,7 +121,9 @@ try:
                 matching = re.match(URL_REGEX, s.url, re.IGNORECASE)
                 #logging.info("  (Checking {0} - {1}".format(s.title, s.url))
                 if s.domain == "xkcd.com" and matching:
-                    if (s.url not in submitted) and ("{0}{1}".format(s.url, s.id) not in submitted):
+                    seen_key = "{0}{1}".format(s.url, s.id)
+                    # s.url was the old "seen_key", so keep it here for backward compatibility.
+                    if (s.url not in submitted) and (seen_key not in submitted):
                         logging.info("New xkcd submission found! {0} - {1}".format(s.title, s.url))
                         existing_comment_found = False
                         if not debug:
@@ -163,9 +165,9 @@ try:
                                 break
                         # Save it!
                         if not debug:
-                            submitted.append("{0}{1}".format(s.url, s.id))
+                            submitted.append(seen_key)
                             submitted_file = open(SAVED_FILENAME, 'a')
-                            submitted_file.write("%s\n" % s.url)
+                            submitted_file.write("%s\n" % seen_key)
                             submitted_file.close()
         except urllib2.HTTPError as e:
             logging.info("ERROR: HTTPError code {0} encountered while making request - sleeping another iteration and retrying.".format(e.code))
