@@ -44,7 +44,7 @@ logging.info("---\n--- Starting reddit-xkcdbot ---")
 
 ### Configuration! You can change these if you want.
 
-VERSION = '1.0'
+VERSION = '1.1'
 APP_TITLE = 'reddit-xkcdbot'
 USER_AGENT = APP_TITLE + '/' + VERSION + ' by /u/calinet6'
 JSON_USER_AGENT = "python;{0}/{1}".format(APP_TITLE, VERSION)
@@ -121,7 +121,7 @@ try:
                 matching = re.match(URL_REGEX, s.url, re.IGNORECASE)
                 #logging.info("  (Checking {0} - {1}".format(s.title, s.url))
                 if s.domain == "xkcd.com" and matching:
-                    if s.url not in submitted:
+                    if (s.url not in submitted) and ("{0}{1}".format(s.url, s.id) not in submitted):
                         logging.info("New xkcd submission found! {0} - {1}".format(s.title, s.url))
                         existing_comment_found = False
                         if not debug:
@@ -163,7 +163,7 @@ try:
                                 break
                         # Save it!
                         if not debug:
-                            submitted.append(s.url)
+                            submitted.append("{0}{1}".format(s.url, s.id))
                             submitted_file = open(SAVED_FILENAME, 'a')
                             submitted_file.write("%s\n" % s.url)
                             submitted_file.close()
