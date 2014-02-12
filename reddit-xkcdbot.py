@@ -15,6 +15,8 @@ Requirements: praw
 import sys
 from time import sleep
 import praw
+#Uncomment below if running multiple praw processes
+#from praw.handlers import MultiprocessHandler
 import os.path
 import re
 from random import choice
@@ -113,10 +115,13 @@ POLL_FREQUENCY = 300
 try:
     while True:
         try:
-            logging.info("Checking /r/xkcd for new submissions...")
+            logging.info("Checking /r/xkcdcomic for new submissions...")
+            #Uncomment both lines below and comment out third line below if running multiple praw instances
+            #handler = MultiprocessHandler()
+            #r = praw.Reddit(user_agent=USER_AGENT, handler=handler)
             r = praw.Reddit(user_agent=USER_AGENT)
             r.login(USERNAME, PASSWORD)
-            submissions = r.get_subreddit('xkcd').get_new_by_date(limit=10)
+            submissions = r.get_subreddit('xkcdcomic').get_new_by_date(limit=10)
             for s in submissions:
                 matching = re.match(URL_REGEX, s.url, re.IGNORECASE)
                 #logging.info("  (Checking {0} - {1}".format(s.title, s.url))
@@ -134,6 +139,7 @@ try:
                         if not existing_comment_found:
                             xkcd_number = re.match(URL_REGEX, s.url, re.IGNORECASE).group(4)
                             mobile_url = "http://m.xkcd.com/{0}/".format(xkcd_number)
+                            explain_xkcd = "http://www.explainxkcd.com/wiki/index.php/{0}".format(xkcd_number)
                             random_string = get_fun_string()
 
                             version_text = "Mobile"
@@ -146,7 +152,7 @@ try:
                                 img = data["img"]
                                 title = data["title"]
                                 random_thing_to_call_the_extra_text_to_fuck_with_people = choice(["Title text", "Title text", "Title text", "Alt text", "Hover text", "Subtext", "Extra junk", "Mouseover text", "Bat text"])
-                                new_comment = "**[{0} Version!]({1})**\n\n[Direct image link: {4}]({5})\n\n**{2}:** {3}\n\n    ({6} Love, xkcd_bot.)".format(version_text, mobile_url, random_thing_to_call_the_extra_text_to_fuck_with_people, title_text, title, img, random_string)
+                                new_comment = "**[{0} Version!]({1})**\n\n[Direct image link: {4}]({5})\n\n**{2}:** {3}\n\nDon't get it? [explain xkcd]({7})\n\n    {6} \n\n    (Sincerely, xkcdcomic_bot.)".format(version_text, mobile_url, random_thing_to_call_the_extra_text_to_fuck_with_people, title_text, title, img, random_string, explain_xkcd)
                             else:
                                 new_comment = "**[{0} Version!]({1})**".format(version_text, mobile_url)
 
